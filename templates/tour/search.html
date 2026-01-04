@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}搜索结果 - 南锣鼓巷导览{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">
+        <i class="bi bi-search"></i> 搜索结果
+        {% if query %}<small class="text-muted">- "{{ query }}"</small>{% endif %}
+    </h1>
+    
+    <form class="mb-4" method="get">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control form-control-lg" placeholder="搜索景点名称或描述..." value="{{ query }}">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-search"></i> 搜索
+            </button>
+        </div>
+    </form>
+
+    {% if query %}
+    <p class="text-muted mb-4">找到 {{ pois.count }} 个相关结果</p>
+    
+    <div class="row g-4">
+        {% for poi in pois %}
+        <div class="col-md-4">
+            <div class="card poi-card h-100">
+                {% if poi.image %}
+                <img src="{{ poi.image.url }}" class="card-img-top" alt="{{ poi.name }}">
+                {% else %}
+                <img src="https://via.placeholder.com/400x180?text={{ poi.name }}" class="card-img-top" alt="{{ poi.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ poi.name }}</h5>
+                    <p class="card-text text-muted">{{ poi.description|truncatechars:80 }}</p>
+                    <a href="{% url 'tour:poi_detail' poi.pk %}" class="btn btn-primary btn-sm">查看详情</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning text-center">
+                <i class="bi bi-emoji-frown fs-1"></i>
+                <h5 class="mt-2">未找到相关结果</h5>
+                <p>请尝试其他关键词</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center text-muted py-5">
+        <i class="bi bi-search fs-1"></i>
+        <p class="mt-2">请输入关键词搜索景点</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

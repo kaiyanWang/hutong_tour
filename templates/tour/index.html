@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}南锣鼓巷 - 智慧导览{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold">{{ hutong.name|default:"南锣鼓巷" }}</h1>
+        <p class="lead">{{ hutong.description|default:"探索北京最具特色的历史文化街区" }}</p>
+        <a href="{% url 'tour:poi_list' %}" class="btn btn-light btn-lg mt-3">
+            <i class="bi bi-compass"></i> 开始探索
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    <!-- 胡同简介 -->
+    {% if hutong %}
+    <section class="mb-5">
+        <h2 class="mb-4"><i class="bi bi-info-circle"></i> 胡同简介</h2>
+        <div class="card p-4">
+            <div class="row">
+                <div class="col-md-8">
+                    <p class="lead">{{ hutong.description }}</p>
+                    {% if hutong.history %}
+                    <h5>历史背景</h5>
+                    <p>{{ hutong.history }}</p>
+                    {% endif %}
+                    <p><i class="bi bi-geo-alt"></i> <strong>位置：</strong>{{ hutong.location }}</p>
+                </div>
+                <div class="col-md-4">
+                    {% if hutong.image %}
+                    <img src="{{ hutong.image.url }}" class="img-fluid rounded" alt="{{ hutong.name }}">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=400" class="img-fluid rounded" alt="南锣鼓巷">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- 热门景点 -->
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-star"></i> 热门景点</h2>
+            <a href="{% url 'tour:poi_list' %}" class="btn btn-outline-primary">查看全部</a>
+        </div>
+        <div class="row g-4">
+            {% for poi in pois %}
+            <div class="col-md-4">
+                <div class="card poi-card h-100">
+                    {% if poi.image %}
+                    <img src="{{ poi.image.url }}" class="card-img-top" alt="{{ poi.name }}">
+                    {% else %}
+                    <img src="https://via.placeholder.com/400x180?text={{ poi.name }}" class="card-img-top" alt="{{ poi.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">{{ poi.name }}</h5>
+                            {% if poi.category %}
+                            <span class="category-badge">{{ poi.category.name }}</span>
+                            {% endif %}
+                        </div>
+                        <p class="card-text text-muted">{{ poi.description|truncatechars:60 }}</p>
+                        <a href="{% url 'tour:poi_detail' poi.pk %}" class="btn btn-primary btn-sm">查看详情</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">暂无景点数据，请先在后台添加。</div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- 推荐路线 -->
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-signpost-2"></i> 推荐路线</h2>
+            <a href="{% url 'tour:route_list' %}" class="btn btn-outline-primary">查看全部</a>
+        </div>
+        <div class="row g-4">
+            {% for route in routes %}
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-map"></i> {{ route.name }}
+                        </h5>
+                        <p class="card-text">{{ route.description|truncatechars:100 }}</p>
+                        <div class="d-flex gap-3 text-muted mb-3">
+                            <span><i class="bi bi-clock"></i> {{ route.duration }}</span>
+                            {% if route.distance %}
+                            <span><i class="bi bi-rulers"></i> {{ route.distance }}</span>
+                            {% endif %}
+                            <span><i class="bi bi-speedometer2"></i> {{ route.difficulty }}</span>
+                        </div>
+                        <a href="{% url 'tour:route_detail' route.pk %}" class="btn btn-primary">查看路线</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">暂无推荐路线，请先在后台添加。</div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

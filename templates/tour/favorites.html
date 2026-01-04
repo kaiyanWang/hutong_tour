@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}我的收藏 - 南锣鼓巷导览{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">
+        <i class="bi bi-heart-fill text-danger"></i> 我的收藏
+    </h1>
+    
+    <div class="row g-4">
+        {% for poi in pois %}
+        <div class="col-md-4">
+            <div class="card poi-card h-100">
+                {% if poi.image %}
+                <img src="{{ poi.image.url }}" class="card-img-top" alt="{{ poi.name }}">
+                {% else %}
+                <img src="https://via.placeholder.com/400x180?text={{ poi.name }}" class="card-img-top" alt="{{ poi.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">{{ poi.name }}</h5>
+                        <i class="bi bi-heart-fill favorite-btn active" data-poi-id="{{ poi.pk }}" title="取消收藏"></i>
+                    </div>
+                    <p class="card-text text-muted">{{ poi.description|truncatechars:60 }}</p>
+                    <a href="{% url 'tour:poi_detail' poi.pk %}" class="btn btn-primary btn-sm">查看详情</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="bi bi-heart fs-1"></i>
+                <h5 class="mt-2">暂无收藏</h5>
+                <p>浏览景点时点击 <i class="bi bi-heart"></i> 即可收藏</p>
+                <a href="{% url 'tour:poi_list' %}" class="btn btn-primary">去看看景点</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.favorite-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const poiId = this.dataset.poiId;
+        const card = this.closest('.col-md-4');
+        fetch(`/api/favorite/${poiId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.is_favorited) {
+                card.remove();
+                if (document.querySelectorAll('.poi-card').length === 0) {
+                    location.reload();
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
