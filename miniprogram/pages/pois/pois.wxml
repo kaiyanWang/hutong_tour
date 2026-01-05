@@ -1,0 +1,50 @@
+<!-- 景点列表页 -->
+<view class="page-pois">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input" 
+        placeholder="搜索景点..." 
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+      />
+      <text class="search-clear" wx:if="{{keyword}}" bindtap="clearSearch">✕</text>
+    </view>
+  </view>
+
+  <!-- 景点列表 -->
+  <view class="poi-list" wx:if="{{pois.length > 0}}">
+    <view 
+      class="poi-card" 
+      wx:for="{{pois}}" 
+      wx:key="id"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <view class="poi-image">
+        <image src="{{item.thumbnail || '/images/placeholder.png'}}" mode="aspectFill"></image>
+      </view>
+      <view class="poi-info">
+        <view class="poi-header">
+          <text class="poi-name">{{item.name}}</text>
+          <view class="poi-type {{getTagClass(item.type)}}">{{item.type_display}}</view>
+        </view>
+        <text class="poi-brief">{{item.brief}}</text>
+        <view class="poi-location">
+          <text class="location-icon">📍</text>
+          <text>{{item.location}}</text>
+        </view>
+      </view>
+      <view class="poi-arrow">›</view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:else>
+    <text class="empty-icon">🔍</text>
+    <text>{{keyword ? '未找到相关景点' : '暂无景点信息'}}</text>
+  </view>
+</view>

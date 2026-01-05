@@ -1,0 +1,56 @@
+<!-- 推荐路线页 -->
+<view class="page-routes">
+  <view class="page-header">
+    <text class="header-icon">🗺️</text>
+    <text class="header-title">推荐游览路线</text>
+    <text class="header-subtitle">精心规划，畅游南锣鼓巷</text>
+  </view>
+
+  <!-- 路线列表 -->
+  <view class="route-list" wx:if="{{routes.length > 0}}">
+    <view class="route-card" wx:for="{{routes}}" wx:key="id">
+      <view class="route-header">
+        <text class="route-name">{{item.name}}</text>
+        <view class="route-meta">
+          <text class="meta-item">⏱️ {{item.duration}}</text>
+          <text class="meta-item">📏 {{item.distance}}</text>
+          <text class="meta-item">📍 {{item.poi_count}}个景点</text>
+        </view>
+      </view>
+      <text class="route-desc">{{item.description}}</text>
+      <button class="btn-detail" bindtap="toggleRoute" data-id="{{item.id}}">
+        {{expandedRoute === item.id ? '收起详情' : '查看详情'}}
+      </button>
+
+      <!-- 路线详情 -->
+      <view class="route-detail" wx:if="{{expandedRoute === item.id && routeDetail}}">
+        <view class="timeline">
+          <view 
+            class="timeline-item" 
+            wx:for="{{routeDetail.pois}}" 
+            wx:for-item="poi" 
+            wx:key="order"
+            bindtap="goToDetail"
+            data-id="{{poi.poi.id}}"
+          >
+            <view class="timeline-dot">{{poi.order}}</view>
+            <view class="timeline-content">
+              <view class="timeline-header">
+                <text class="timeline-name">{{poi.poi.name}}</text>
+                <view class="timeline-type {{getTagClass(poi.poi.type)}}">{{poi.poi.type_display}}</view>
+              </view>
+              <text class="timeline-brief">{{poi.poi.brief}}</text>
+            </view>
+            <text class="timeline-arrow">›</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:else>
+    <text class="empty-icon">🗺️</text>
+    <text>暂无推荐路线</text>
+  </view>
+</view>

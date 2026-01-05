@@ -1,0 +1,56 @@
+<!-- 景点详情页 -->
+<view class="page-detail" wx:if="{{poi}}">
+  <!-- 图片轮播 -->
+  <swiper class="image-swiper" indicator-dots autoplay circular wx:if="{{poi.images && poi.images.length}}">
+    <swiper-item wx:for="{{poi.images}}" wx:key="*this">
+      <image src="{{item}}" mode="aspectFill" bindtap="previewImage" data-url="{{item}}"></image>
+    </swiper-item>
+  </swiper>
+  <view class="image-placeholder" wx:else>
+    <text>🏠</text>
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="detail-header">
+    <view class="header-top">
+      <text class="poi-name">{{poi.name}}</text>
+      <view class="poi-type {{getTagClass(poi.type)}}">{{poi.type_display}}</view>
+    </view>
+    <view class="poi-location">
+      <text class="location-icon">📍</text>
+      <text>{{poi.location}}</text>
+    </view>
+  </view>
+
+  <!-- 详细信息卡片 -->
+  <view class="detail-cards">
+    <view class="card" wx:if="{{poi.opening_hours}}">
+      <view class="card-header">
+        <text class="card-icon">⏰</text>
+        <text class="card-title">开放时间</text>
+      </view>
+      <text class="card-content">{{poi.opening_hours}}</text>
+    </view>
+
+    <view class="card" wx:if="{{poi.tips}}">
+      <view class="card-header">
+        <text class="card-icon">💡</text>
+        <text class="card-title">游览提示</text>
+      </view>
+      <text class="card-content">{{poi.tips}}</text>
+    </view>
+
+    <view class="card">
+      <view class="card-header">
+        <text class="card-icon">📖</text>
+        <text class="card-title">详细介绍</text>
+      </view>
+      <text class="card-content description">{{poi.description}}</text>
+    </view>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading" wx:else>
+  <text>加载中...</text>
+</view>
