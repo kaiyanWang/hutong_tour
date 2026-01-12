@@ -1,0 +1,73 @@
+<!--pages/favorites/favorites.wxml-->
+<view class="container">
+  <!-- 未登录状态 -->
+  <view class="not-logged-in" wx:if="{{!isLoggedIn}}">
+    <view class="login-prompt">
+      <text class="prompt-icon">🔐</text>
+      <text class="prompt-title">登录后查看收藏</text>
+      <text class="prompt-text">登录后可以收藏喜欢的景点，方便下次查看</text>
+      <button class="login-btn" bindtap="navigateToLogin">立即登录</button>
+    </view>
+  </view>
+
+  <!-- 已登录状态 -->
+  <view wx:if="{{isLoggedIn}}">
+    <!-- 页面标题 -->
+    <view class="page-header">
+      <text class="page-title">❤️ 我的收藏</text>
+      <text class="page-count" wx:if="{{!loading && favorites.length > 0}}">共{{favorites.length}}个景点</text>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 收藏列表 -->
+    <view class="favorite-list" wx:if="{{!loading && favorites.length > 0}}">
+      <view 
+        class="favorite-card card" 
+        wx:for="{{favorites}}" 
+        wx:key="id"
+      >
+        <view class="card-content" bindtap="navigateToDetail" data-id="{{item.poi.id}}">
+          <image class="poi-image" src="{{item.poi.images[0] || '/images/placeholder.png'}}" mode="aspectFill"></image>
+          <view class="poi-info">
+            <view class="poi-header">
+              <text class="poi-name">{{item.poi.name}}</text>
+            </view>
+            <view class="poi-tag-row">
+              <text class="tag tag-{{item.poi.category}}">{{item.poi.category_display}}</text>
+            </view>
+            <text class="poi-brief">{{item.poi.brief}}</text>
+            <view class="poi-footer">
+              <text class="collect-time">📅 收藏于 {{item.created_at}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="card-action">
+          <view 
+            class="remove-btn" 
+            catchtap="removeFavorite" 
+            data-id="{{item.poi.id}}"
+            data-name="{{item.poi.name}}"
+          >
+            <text class="remove-icon">🗑️</text>
+            <text class="remove-text">删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty" wx:if="{{!loading && favorites.length === 0}}">
+      <text class="empty-icon">💝</text>
+      <text class="empty-text">还没有收藏任何景点</text>
+      <text class="empty-hint">去景点列表发现更多精彩</text>
+      <view class="empty-btn" bindtap="navigateToPOIList">
+        <text>去看看</text>
+      </view>
+    </view>
+  </view>
+</view>

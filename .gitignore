@@ -27,6 +27,8 @@ yarn-error.log*
 frontend/dist/
 frontend/.vite/
 *.local
+frontend/node_modules/
+frontend/.vscode/
 
 # 微信小程序
 miniprogram/miniprogram_npm/
@@ -51,3 +53,5 @@ Thumbs.db
 # 其他
 *.bak
 *.tmp
+backend/.hypothesis/
+backend/.pytest_cache

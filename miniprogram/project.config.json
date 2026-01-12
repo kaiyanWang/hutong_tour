@@ -1,5 +1,5 @@
 {
-  "description": "南锣鼓巷旅游导览小程序",
+  "description": "南锣鼓巷胡同智慧导览系统微信小程序",
   "packOptions": {
     "ignore": [],
     "include": []
@@ -7,7 +7,7 @@
   "setting": {
     "bundle": false,
     "userConfirmedBundleSwitch": false,
-    "urlCheck": false,
+    "urlCheck": true,
     "scopeDataCheck": false,
     "coverView": true,
     "es6": true,
@@ -24,6 +24,8 @@
     "nodeModules": false,
     "enhance": true,
     "useMultiFrameRuntime": true,
+    "useApiHook": true,
+    "useApiHostProcess": true,
     "showShadowRootInWxmlPanel": true,
     "packNpmManually": false,
     "enableEngineNative": false,
@@ -45,10 +47,13 @@
     "disableSWC": true
   },
   "compileType": "miniprogram",
-  "libVersion": "3.13.1",
-  "appid": "wxe07ab2469b11a308",
-  "projectname": "nanluoguxiang-miniprogram",
+  "libVersion": "2.19.4",
+  "appid": "touristappid",
+  "projectname": "nanluoguxiang-tour",
   "condition": {},
-  "simulatorPluginLibVersion": {},
-  "editorSetting": {}
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
+  "simulatorPluginLibVersion": {}
 }

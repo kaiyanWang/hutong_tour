@@ -1,0 +1,61 @@
+<!--pages/register/register.wxml-->
+<view class="container">
+  <view class="register-card">
+    <!-- Logo区域 -->
+    <view class="logo-section">
+      <text class="logo-icon">🏛️</text>
+      <text class="logo-title">创建账号</text>
+      <text class="logo-subtitle">加入南锣鼓巷导览</text>
+    </view>
+
+    <!-- 表单区域 -->
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label">用户名</text>
+        <input 
+          class="form-input" 
+          placeholder="请输入用户名"
+          value="{{username}}"
+          bindinput="onUsernameInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">密码</text>
+        <input 
+          class="form-input" 
+          placeholder="请输入密码（至少6位）"
+          password
+          value="{{password}}"
+          bindinput="onPasswordInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">确认密码</text>
+        <input 
+          class="form-input" 
+          placeholder="请再次输入密码"
+          password
+          value="{{confirmPassword}}"
+          bindinput="onConfirmPasswordInput"
+        />
+      </view>
+
+      <button 
+        class="register-btn btn-primary" 
+        bindtap="onRegister"
+        loading="{{loading}}"
+        disabled="{{loading}}"
+      >
+        注册
+      </button>
+    </view>
+
+    <!-- 登录链接 -->
+    <view class="login-link">
+      <text class="link-text">已有账号？</text>
+      <text class="link-action" bindtap="navigateToLogin">立即登录</text>
+    </view>
+  </view>
+</view>

@@ -1,58 +1,110 @@
-<!-- 首页 - 胡同概览 -->
-<view class="page-index">
-  <!-- 头部横幅 -->
-  <view class="hero">
-    <view class="hero-bg"></view>
-    <view class="hero-content">
-      <text class="hero-icon">🏮</text>
-      <text class="hero-title">{{hutong.name || '南锣鼓巷'}}</text>
-      <text class="hero-subtitle">北京最具特色的历史文化街区</text>
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 胡同信息 -->
+  <view wx:if="{{!loading && hutong}}">
+    <!-- 头图 -->
+    <view class="hero-section">
+      <image class="hero-image" src="{{hutong.image}}" mode="aspectFill"></image>
+      <view class="hero-overlay">
+        <text class="hero-title">{{hutong.name}}</text>
+        <text class="hero-subtitle">北京历史文化街区</text>
+      </view>
+    </view>
+
+    <!-- 简介 -->
+    <view class="card intro-card">
+      <view class="card-header">
+        <view class="card-icon">📖</view>
+        <text class="card-title">简介</text>
+      </view>
+      <view class="card-body">
+        <text class="intro-text">{{hutong.introduction}}</text>
+      </view>
+    </view>
+
+    <!-- 历史 -->
+    <view class="card history-card">
+      <view class="card-header">
+        <view class="card-icon">🏛️</view>
+        <text class="card-title">历史沿革</text>
+      </view>
+      <view class="card-body">
+        <text class="history-text">{{hutong.history}}</text>
+      </view>
+    </view>
+
+    <!-- 地图 -->
+    <view class="card map-card">
+      <view class="card-header">
+        <view class="card-icon">📍</view>
+        <text class="card-title">位置</text>
+        <view class="nav-btn" bindtap="openNavigation">
+          <text class="nav-btn-text">导航</text>
+        </view>
+      </view>
+      <view class="card-body map-body">
+        <map 
+          id="hutongMap"
+          class="map"
+          longitude="{{hutong.longitude}}"
+          latitude="{{hutong.latitude}}"
+          scale="{{mapScale}}"
+          markers="{{markers}}"
+          show-location="{{true}}"
+          enable-scroll="{{true}}"
+          enable-zoom="{{true}}"
+          bindmarkertap="onMarkerTap"
+        ></map>
+        <view class="map-info">
+          <text class="map-address">📍 北京市东城区南锣鼓巷</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 快捷入口 -->
+    <view class="quick-entry">
+      <view class="entry-item" bindtap="navigateToPOIList">
+        <view class="entry-icon-wrapper poi-bg">
+          <text class="entry-icon">🏛️</text>
+        </view>
+        <text class="entry-text">景点列表</text>
+        <text class="entry-desc">探索周边景点</text>
+      </view>
+      <view class="entry-item" bindtap="navigateToRouteList">
+        <view class="entry-icon-wrapper route-bg">
+          <text class="entry-icon">🗺️</text>
+        </view>
+        <text class="entry-text">推荐路线</text>
+        <text class="entry-desc">精选游览路线</text>
+      </view>
+    </view>
+
+    <!-- 温馨提示 -->
+    <view class="tips-card">
+      <view class="tips-header">
+        <text class="tips-icon">💡</text>
+        <text class="tips-title">游览提示</text>
+      </view>
+      <view class="tips-content">
+        <text class="tips-text">• 建议游览时间：2-3小时</text>
+        <text class="tips-text">• 最佳游览季节：春秋两季</text>
+        <text class="tips-text">• 交通：地铁6号线/8号线南锣鼓巷站</text>
+      </view>
     </view>
   </view>
 
-  <!-- 特色标签 -->
-  <view class="tags-section" wx:if="{{hutong.features}}">
-    <view class="tag tag-danger" wx:for="{{hutong.features}}" wx:key="*this">
-      {{item}}
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && !hutong}}">
+    <text class="empty-icon">📭</text>
+    <text class="empty-text">暂无数据</text>
+    <view class="empty-btn" bindtap="loadHutongData">
+      <text>点击重试</text>
     </view>
-  </view>
-
-  <!-- 快捷入口 -->
-  <view class="quick-entry">
-    <view class="entry-item" bindtap="goToPois">
-      <view class="entry-icon">🏠</view>
-      <text class="entry-text">景点列表</text>
-      <text class="entry-count">{{poiCount}}个景点</text>
-    </view>
-    <view class="entry-item" bindtap="goToRoutes">
-      <view class="entry-icon">🗺️</view>
-      <text class="entry-text">推荐路线</text>
-      <text class="entry-count">{{routeCount}}条路线</text>
-    </view>
-  </view>
-
-  <!-- 简介卡片 -->
-  <view class="card info-card">
-    <view class="card-header">
-      <text class="card-icon">📍</text>
-      <text class="card-title">地理位置</text>
-    </view>
-    <text class="card-content">{{hutong.location || '北京市东城区南锣鼓巷'}}</text>
-  </view>
-
-  <view class="card info-card">
-    <view class="card-header">
-      <text class="card-icon">📖</text>
-      <text class="card-title">胡同简介</text>
-    </view>
-    <text class="card-content">{{hutong.description || '加载中...'}}</text>
-  </view>
-
-  <view class="card info-card">
-    <view class="card-header">
-      <text class="card-icon">🏛️</text>
-      <text class="card-title">历史沿革</text>
-    </view>
-    <text class="card-content">{{hutong.history || '加载中...'}}</text>
   </view>
 </view>

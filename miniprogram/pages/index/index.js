@@ -1,53 +1,115 @@
-const app = getApp()
+// pages/index/index.js
+const api = require('../../utils/api')
+
+// 百度地图小程序AK
+const BAIDU_MAP_AK = 'GJmkGJ3hoOKqsZHhGNukaTkcusjcyoIn'
 
 Page({
   data: {
-    hutong: {},
-    poiCount: 0,
-    routeCount: 0
+    hutong: null,
+    loading: true,
+    markers: [],
+    mapScale: 16,
+    // 默认中心点（南锣鼓巷）
+    defaultLatitude: 39.9375,
+    defaultLongitude: 116.4030
   },
 
   onLoad() {
-    this.loadHutongInfo()
-    this.loadCounts()
+    this.loadHutongData()
+  },
+
+  onShow() {
+    // 每次显示页面时刷新数据
   },
 
   onPullDownRefresh() {
-    this.loadHutongInfo().then(() => {
+    this.loadHutongData().then(() => {
       wx.stopPullDownRefresh()
     })
   },
 
-  async loadHutongInfo() {
+  async loadHutongData() {
     try {
-      const data = await app.request('/hutong/')
-      this.setData({ hutong: data })
-    } catch (err) {
-      console.error('获取胡同信息失败:', err)
-      wx.showToast({ title: '加载失败', icon: 'none' })
-    }
-  },
-
-  async loadCounts() {
-    try {
-      const [pois, routes] = await Promise.all([
-        app.request('/pois/'),
-        app.request('/routes/')
-      ])
-      this.setData({
-        poiCount: pois.count || 0,
-        routeCount: routes.count || 0
+      this.setData({ loading: true })
+      const hutong = await api.getHutong()
+      
+      // 设置地图标记
+      const markers = [{
+        id: 1,
+        longitude: hutong.longitude,
+        latitude: hutong.latitude,
+        title: hutong.name,
+        width: 30,
+        height: 30,
+        callout: {
+          content: hutong.name,
+          color: '#333333',
+          fontSize: 14,
+          borderRadius: 8,
+          bgColor: '#ffffff',
+          padding: 8,
+          display: 'ALWAYS'
+        }
+      }]
+      
+      this.setData({ 
+        hutong,
+        markers,
+        loading: false 
       })
-    } catch (err) {
-      console.error('获取统计失败:', err)
+    } catch (error) {
+      console.error('加载胡同数据失败:', error)
+      this.setData({ loading: false })
+      wx.showToast({
+        title: '加载失败，请重试',
+        icon: 'none'
+      })
     }
   },
 
-  goToPois() {
-    wx.switchTab({ url: '/pages/pois/pois' })
+  // 地图标记点击
+  onMarkerTap(e) {
+    const markerId = e.markerId
+    if (this.data.hutong) {
+      wx.showToast({
+        title: this.data.hutong.name,
+        icon: 'none'
+      })
+    }
   },
 
-  goToRoutes() {
-    wx.switchTab({ url: '/pages/routes/routes' })
+  // 打开地图导航
+  openNavigation() {
+    if (!this.data.hutong) return
+    
+    const { latitude, longitude, name } = this.data.hutong
+    wx.openLocation({
+      latitude: latitude,
+      longitude: longitude,
+      name: name,
+      scale: 18
+    })
+  },
+
+  // 跳转到POI列表
+  navigateToPOIList() {
+    wx.switchTab({
+      url: '/pages/poi-list/poi-list'
+    })
+  },
+
+  // 跳转到路线列表
+  navigateToRouteList() {
+    wx.switchTab({
+      url: '/pages/route-list/route-list'
+    })
+  },
+
+  // 跳转到登录页
+  navigateToLogin() {
+    wx.navigateTo({
+      url: '/pages/login/login'
+    })
   }
 })

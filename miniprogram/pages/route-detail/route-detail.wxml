@@ -1,0 +1,103 @@
+<!--pages/route-detail/route-detail.wxml-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 路线详情 -->
+  <view wx:if="{{!loading && route}}">
+    <!-- 路线信息 -->
+    <view class="route-info card">
+      <text class="route-name">{{route.name}}</text>
+      <view class="route-meta">
+        <view class="meta-item">
+          <text class="meta-icon">⏱️</text>
+          <text class="meta-text">预计 {{route.duration}} 分钟</text>
+        </view>
+        <view class="meta-item">
+          <text class="meta-icon">📍</text>
+          <text class="meta-text">{{route.pois.length}} 个景点</text>
+        </view>
+      </view>
+      <text class="route-desc">{{route.description}}</text>
+    </view>
+
+    <!-- 地图 -->
+    <view class="map-section card">
+      <view class="section-header">
+        <text class="section-icon">🗺️</text>
+        <text class="section-title">路线地图</text>
+      </view>
+      <view class="map-tips">
+        <text class="tips-text">点击标记可查看景点详情或导航</text>
+      </view>
+      <map 
+        id="routeMap"
+        class="map"
+        longitude="{{mapCenter.longitude}}"
+        latitude="{{mapCenter.latitude}}"
+        scale="{{mapScale}}"
+        markers="{{markers}}"
+        polyline="{{polyline}}"
+        show-location="{{true}}"
+        enable-scroll="{{true}}"
+        enable-zoom="{{true}}"
+        bindmarkertap="onMarkerTap"
+      ></map>
+    </view>
+
+    <!-- POI列表 -->
+    <view class="poi-section card">
+      <view class="section-header">
+        <text class="section-icon">📍</text>
+        <text class="section-title">途经景点</text>
+        <text class="section-count">共{{route.pois.length}}个</text>
+      </view>
+      <view class="poi-list">
+        <view 
+          class="poi-item" 
+          wx:for="{{route.pois}}" 
+          wx:key="id"
+          bindtap="navigateToPOI"
+          data-id="{{item.id}}"
+        >
+          <view class="poi-order-wrapper">
+            <view class="poi-order">{{index + 1}}</view>
+            <view class="poi-line" wx:if="{{index < route.pois.length - 1}}"></view>
+          </view>
+          <image class="poi-image" src="{{item.images[0] || '/images/placeholder.png'}}" mode="aspectFill"></image>
+          <view class="poi-info">
+            <text class="poi-name">{{item.name}}</text>
+            <text class="poi-category tag tag-{{item.category}}">{{item.category_display}}</text>
+            <text class="poi-brief">{{item.brief}}</text>
+          </view>
+          <view class="poi-arrow">›</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 游览提示 -->
+    <view class="tips-section">
+      <view class="tips-header">
+        <text class="tips-icon">💡</text>
+        <text class="tips-title">游览提示</text>
+      </view>
+      <view class="tips-content">
+        <text class="tips-item">• 建议按照路线顺序游览，体验更佳</text>
+        <text class="tips-item">• 点击景点可查看详情和导航</text>
+        <text class="tips-item">• 预计游览时间仅供参考</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && !route}}">
+    <text class="empty-icon">😕</text>
+    <text class="empty-text">路线不存在</text>
+    <view class="empty-btn" bindtap="navigateBack">
+      <text>返回列表</text>
+    </view>
+  </view>
+</view>

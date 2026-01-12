@@ -1,0 +1,50 @@
+<!--pages/login/login.wxml-->
+<view class="container">
+  <view class="login-card">
+    <!-- Logo区域 -->
+    <view class="logo-section">
+      <text class="logo-icon">🏛️</text>
+      <text class="logo-title">南锣鼓巷导览</text>
+      <text class="logo-subtitle">探索胡同文化之美</text>
+    </view>
+
+    <!-- 表单区域 -->
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label">用户名</text>
+        <input 
+          class="form-input" 
+          placeholder="请输入用户名"
+          value="{{username}}"
+          bindinput="onUsernameInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <text class="form-label">密码</text>
+        <input 
+          class="form-input" 
+          placeholder="请输入密码"
+          password
+          value="{{password}}"
+          bindinput="onPasswordInput"
+        />
+      </view>
+
+      <button 
+        class="login-btn btn-primary" 
+        bindtap="onLogin"
+        loading="{{loading}}"
+        disabled="{{loading}}"
+      >
+        登录
+      </button>
+    </view>
+
+    <!-- 注册链接 -->
+    <view class="register-link">
+      <text class="link-text">还没有账号？</text>
+      <text class="link-action" bindtap="navigateToRegister">立即注册</text>
+    </view>
+  </view>
+</view>
